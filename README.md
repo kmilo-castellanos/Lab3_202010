@@ -1,7 +1,9 @@
 # Lab3_202010
 
-Este repositorio contiene una plantilla del laboratorio 3 con un ejemplo de implementación de una aplicación en el esquema Modelo-Vista-Controlador que carga datos y realiza consultas usando las estructuras de datos implementadas. Para ejecutar la aplicación debe ejecutar: python App/view.py
-
+Este repositorio contiene una plantilla del laboratorio 3 con un ejemplo de implementación de una aplicación en el esquema Modelo-Vista-Controlador que carga datos y realiza consultas usando las estructuras de datos implementadas. Para ejecutar la aplicación debe ejecutar: 
+```
+python App/view.py
+```
 *	ADT: archivos Python con la definición de los Tipos Abstractos de Datos.
 *	App: aplicación Python cliente que usa las ADTs y ordenamientos para dar solución a laboratorios y retos.
     * view.py: Es el punto de entrada de la aplicación, y se encarga de la entrada y salida de datos, e interacción con el usuario
