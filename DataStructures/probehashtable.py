@@ -91,7 +91,7 @@ def get (map, key, comparefunction):
     pos = findSlot (map, key, hash, comparefunction)
     if pos > 0:
         element = lt.getElement( map['table'], pos)
-        return element
+        return element['value']
     else: 
         return None
 
@@ -185,20 +185,23 @@ def findSlot (map, key, hashvalue, comparefunction):
     avail = -1                                             # no se ha encontrado una posición aun
     searchpos = 0                                          #  
     table = map['table']
-    while (searchpos!=hashvalue):                          # Se busca una posición hasta llegar al punto de partida
-        if (searchpos == 0):   
-            searchpos = hashvalue                          # searchpos comienza la búsqueda en la posición hashvalue
-        if isAvailable (table, searchpos):                 # La posición esta disponible
-            element = lt.getElement(table, searchpos)      
-            if (avail == -1 ):
-                avail = searchpos                          # avail tiene la primera posición disponible encontrada
-            if  element['key']==None:                      # La posición nunca ha sido utilizada, luego el elemento no existe
-                break
-        else:                                              # la posicion no estaba disponible
-            element = lt.getElement(table, searchpos)      
-            if comparefunction (key, element['key']):      # La llave es exactamente la que se busca
-                return searchpos                           # Se termina la busqueda y se retorna la posicion
-        searchpos = (((searchpos) % map['capacity'])+1);   # Se pasa a la siguiente posición de la tabla
+    try:
+        while (searchpos!=hashvalue):                          # Se busca una posición hasta llegar al punto de partida
+            if (searchpos == 0):   
+                searchpos = hashvalue                          # searchpos comienza la búsqueda en la posición hashvalue
+            if isAvailable (table, searchpos):                 # La posición esta disponible
+                element = lt.getElement(table, searchpos)      
+                if (avail == -1 ):
+                    avail = searchpos                          # avail tiene la primera posición disponible encontrada
+                if  element['key']==None:                      # La posición nunca ha sido utilizada, luego el elemento no existe
+                    break
+            else:                                              # la posicion no estaba disponible
+                element = lt.getElement(table, searchpos)      
+                if comparefunction (key, element):      # La llave es exactamente la que se busca
+                    return searchpos                           # Se termina la busqueda y se retorna la posicion
+            searchpos = (((searchpos) % map['capacity'])+1); 
+    except:
+        print("Error...",key, element)
     return -(avail)                                        # Se retorna la primera posicion disponible, se indica 
                                                            # con un numero negativo que el elemento no estaba presente 
 

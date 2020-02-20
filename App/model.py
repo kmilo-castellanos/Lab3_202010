@@ -22,6 +22,7 @@
 
 import config as cf
 from ADT import list as lt
+from ADT import map as map
 from DataStructures import listiterator as it
 
 
@@ -37,49 +38,94 @@ def newCatalog():
     """
     Inicializa el catálogo de peliculas. Retorna el catalogo inicializado.
     """
-    catalog = {'movies':None, 'directors':None, 'actors': None}
-    catalog['movies'] = lt.newList('ARRAY_LIST')
-    catalog['directors'] = lt.newList('ARRAY_LIST')
-    catalog['actors'] = lt.newList('ARRAY_LIST')
+    catalog = {'booksList':None, 'authors':None, 'booksMap': None}
+    catalog['booksList'] = lt.newList("ARRAY_LIST")
+    catalog['booksMap'] = map.newMap (5003, maptype='CHAINING')#10000 books
+    catalog['authors'] = map.newMap (12007, maptype='PROBING') # 5841 authors
+    #catalog['movieIdMap'] = map.newMap (60013, maptype='CHAINING')#329044 movies
+    #catalog['movieTitleMap'] = map.newMap (60013, maptype='CHAINING')
     return catalog
 
 
-def newActor (name, movie_id):
+def newBook (row):
     """
     Crea una nueva estructura para almacenar los actores de una pelicula 
     """
-    pass
+    book = {"book_id": row['book_id'], "title":row['title'], "average_rating":row['average_rating'], "ratings_count":row['ratings_count']}
+    return book
 
-def addActor (catalog, actor):
+def addBookList (catalog, row):
     """
-    Adiciona un actor a la lista de actores
+    Adiciona libro a la lista
     """
-    pass
+    books = catalog['booksList']
+    book = newBook(row)
+    lt.addLast(books, book)
 
-def newDirector (name, movie_id):
+def addBookMap (catalog, row):
     """
-    Esta estructura almancena los directores de una pelicula.
+    Adiciona libro al map con key=title
     """
-    director = {'name':'', 'movie_id':''}
-    director ['name'] = name
-    director ['movie_id'] = movie_id
-    return director
+    books = catalog['booksMap']
+    book = newBook(row)
+    map.put(books, book['title'], book, compareByKey)
 
-
-def addDirector (catalog, director):
+def newAuthor (name, row):
     """
-    Adiciona un director a la lista de directores
+    Crea una nueva estructura para modelar un autor y sus libros
     """
-    d = newDirector (director['director_name'], director['id'])
-    lt.addLast (catalog['directors'], d)
+    author = {'name':"", "authorBooks":None,  "sum_average_rating":0}
+    author ['name'] = name
+    author['sum_average_rating'] = float(row['average_rating'])
+    author ['authorBooks'] = lt.newList('SINGLE_LINKED')
+    lt.addLast(author['authorBooks'],row['book_id'])
+    return author
 
+def addAuthor (catalog, name, row):
+    """
+    Adiciona un autor al map y sus libros
+    """
+    if name:
+        authors = catalog['authors']
+        author=map.get(authors,name,compareByKey)
+        if author:
+            lt.addLast(author['authorBooks'],row['book_id'])
+            author['sum_average_rating'] += float(row['average_rating'])
+        else:
+            author = newAuthor(name, row)
+            map.put(authors, author['name'], author, compareByKey)
 
 
 # Funciones de consulta
 
-def getMoviesByDirector (catalog, dir_name):
-    """
-    Retorna las peliculas a partir del nombre del director
-    """
-    return []
 
+def getBookInList (catalog, bookTitle):
+    """
+    Retorna el libro desde la lista a partir del titulo
+    """
+    pos = lt.isPresent(catalog['booksList'], bookTitle, compareByTitle)
+    if pos:
+        return lt.getElement(catalog['booksList'],pos)
+    return None
+
+
+def getBookInMap (catalog, bookTitle):
+    """
+    Retorna el libro desde el mapa a partir del titulo (key)
+    """
+    return map.get(catalog['booksMap'], bookTitle, compareByKey)
+
+
+def getAuthorInfo (catalog, authorName):
+    """
+    Retorna el autor a partir del nombre
+    """
+    return map.get(catalog['authors'], authorName, compareByKey)
+
+# Funciones de comparacion
+
+def compareByKey (key, element):
+    return  (key == element['key'] )  
+
+def compareByTitle(bookTitle, element):
+    return  (bookTitle == element['title'] )
