@@ -41,9 +41,7 @@ def newCatalog():
     catalog = {'booksList':None, 'authors':None, 'booksMap': None}
     catalog['booksList'] = lt.newList("ARRAY_LIST")
     catalog['booksMap'] = map.newMap (5003, maptype='CHAINING')#10000 books
-    catalog['authors'] = map.newMap (12007, maptype='PROBING') # 5841 authors
-    #catalog['movieIdMap'] = map.newMap (60013, maptype='CHAINING')#329044 movies
-    #catalog['movieTitleMap'] = map.newMap (60013, maptype='CHAINING')
+    catalog['authors'] = map.newMap (12007, maptype='PROBING') #5841 authors
     return catalog
 
 
